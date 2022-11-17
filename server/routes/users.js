@@ -1,6 +1,25 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const cloudinary = require('cloudinary').v2
+const mongoKey = require("../config/keys");
+
+cloudinary.config({
+  cloud_name: mongoKey.CLOUDINARY_NAME,
+  api_key: mongoKey.CLOUDINARY_API_KEY,
+  api_secret: mongoKey.CLOUDINARY_API_SECRET
+})
+
+//{ upload_preset: 'nearyu_dev_setups' }
+//Route for Authenticaions
+exports.upload = ('/file', async (req, res) => {
+  try {
+    const result = await cloudinary.uploader.upload(req.body.file)
+    return res.status(200).json({ file: result })
+  } catch (err) {
+    return res.status(500).json({ success: false, msg: "Failed, an error occurred while uploading file", err })
+  }
+})
 
 exports.fetchUsers = (req, res) => {
   User.find()
@@ -54,13 +73,13 @@ exports.registerUser = (req, res) => {
 
   // backend validation
   if (!image || !name || !email || !password)
-    return res.status(400).json({msg: "Please enter all fields"});
+    return res.status(400).json({ msg: "Please enter all fields" });
   if (password.length < 6)
-    return res.status(400).json({msg: "Password should be up to six characters"});
+    return res.status(400).json({ msg: "Password should be up to six characters" });
 
   //Check for existing user
   User.findOne({ email }).then(user => {
-    if (user) return res.status(400).json({msg: "Email already exist"});
+    if (user) return res.status(400).json({ msg: "Email already exist" });
 
     //Create a new user
     const newUser = new User({
@@ -100,7 +119,7 @@ exports.updateUser = (req, res) => {
 
   // backend Validations
   if (!locationData)
-    return res.status(400).json({msg: "Please enter all fields"});
+    return res.status(400).json({ msg: "Please enter all fields" });
 
   //Check for existing user
   User.findByIdAndUpdate(

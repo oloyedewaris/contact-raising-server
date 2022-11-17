@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 //Config  mongodb
-const db = mongoKey.mongoURI;
+const db = mongoKey.MONGO_URI;
 
 //Connect to mongodb
 mongoose
@@ -44,6 +44,7 @@ app.post("/api/user/register", users.registerUser);
 app.patch("/api/user/update", auth, users.updateUser);
 app.get("/api/user/fetch", users.fetchUsers);
 app.get("/api/user/fetch/:id", users.findUser);
+app.post("/api/upload", users.upload);
 
 // Serve static assets if in production
 if (process.env.NODE_ENV === "production") {
