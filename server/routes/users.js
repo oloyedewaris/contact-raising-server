@@ -10,11 +10,10 @@ cloudinary.config({
   api_secret: mongoKey.CLOUDINARY_API_SECRET
 })
 
-//{ upload_preset: 'nearyu_dev_setups' }
 //Route for Authenticaions
 exports.upload = ('/file', async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.body.file)
+    const result = await cloudinary.uploader.upload(req.body.file, { upload_preset: 'contact-raising' })
     return res.status(200).json({ file: result })
   } catch (err) {
     return res.status(500).json({ success: false, msg: "Failed, an error occurred while uploading file", err })
